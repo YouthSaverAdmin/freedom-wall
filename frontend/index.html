@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Freedom Wall</title>
+</head>
+<body>
+    <h1>Freedom Wall</h1>
+    <form id="message-form">
+        <input type="text" id="message-input" placeholder="Write a message" required>
+        <button type="submit">Post</button>
+    </form>
+    <div id="messages"></div>
+    <script >
+    const form = document.getElementById('message-form');
+        const input = document.getElementById('message-input');
+        const messagesDiv = document.getElementById('messages');
+        
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const message = input.value;
+        
+            const response = await fetch('https://freedombackend20.vercel.app/api/messages', { // Updated URL
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message })
+            });
+        
+            if (response.ok) {
+                input.value = '';
+                loadMessages();
+            } else {
+                alert('Failed to post message');
+            }
+        });
+        
+        async function loadMessages() {
+            const response = await fetch('https://freedombackend20.vercel.app/api/messages'); // Updated URL
+            const messages = await response.json();
+            messagesDiv.innerHTML = messages.map(msg => `<div class="message">${msg}</div>`).join('');
+        }
+        
+        loadMessages();
+        </script>
+</body>
+</html>
